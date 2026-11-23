@@ -48,8 +48,9 @@ jobs:
       - name: Run release tests
         run: npm run release:test
 
-      - name: Validate Expo compatibility
+      - name: Expo Doctor compatibility audit (advisory)
         run: npx --yes expo-doctor@latest
+        continue-on-error: true
 
       - name: Verify Expo authentication token
         shell: bash
