@@ -621,10 +621,10 @@ export default function InicioScreen() {
       
       <View style={styles.motivationContainer}>
         <Text style={styles.motivationText}>
-          "Ma tihchiwakaj, ma titlamachti náhuatl."
+          &quot;Ma tihchiwakaj, ma titlamachti náhuatl.&quot;
         </Text>
         <Text style={styles.motivationTranslation}>
-          "Vamos a hacer, vamos a estudiar náhuatl."
+          &quot;Vamos a hacer, vamos a estudiar náhuatl.&quot;
         </Text>
       </View>
     </ScrollView>
