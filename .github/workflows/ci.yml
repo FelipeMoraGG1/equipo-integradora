@@ -1,0 +1,44 @@
+name: CI - Tinehnemi
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-\${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate application and release configuration
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Configure Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Generate release environment metadata
+        run: npm run release:prepare
+
+      - name: Run release environment tests
+        run: npm run release:test
+
+      - name: Check Expo project compatibility
+        run: npx --yes expo-doctor@latest
