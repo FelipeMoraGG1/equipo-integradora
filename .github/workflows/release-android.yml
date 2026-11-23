@@ -1,0 +1,63 @@
+name: Release Android - Tinehnemi
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      submit_to_play_store:
+        description: "After building, upload the app to the Google Play internal testing track"
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Validate, build and optionally submit Android
+    runs-on: ubuntu-latest
+    env:
+      EXPO_TOKEN: \${{ secrets.EXPO_TOKEN }}
+      SUBMIT_TO_PLAY_STORE: \${{ github.event_name == 'workflow_dispatch' && inputs.submit_to_play_store && 'true' || 'false' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Configure Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Prepare release environment
+        run: npm run release:prepare
+
+      - name: Run release tests
+        run: npm run release:test
+
+      - name: Validate Expo compatibility
+        run: npx --yes expo-doctor@latest
+
+      - name: Verify Expo authentication token
+        shell: bash
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo "::error::Create the EXPO_TOKEN repository secret before running an EAS release."
+            exit 1
+          fi
+
+      - name: Build Android and optionally submit to Google Play
+        run: npm run release:deploy
