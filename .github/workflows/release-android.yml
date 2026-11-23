@@ -24,8 +24,8 @@ jobs:
     name: Validate, build and optionally submit Android
     runs-on: ubuntu-latest
     env:
-      EXPO_TOKEN: \${{ secrets.EXPO_TOKEN }}
-      SUBMIT_TO_PLAY_STORE: \${{ github.event_name == 'workflow_dispatch' && inputs.submit_to_play_store && 'true' || 'false' }}
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      SUBMIT_TO_PLAY_STORE: ${{ github.event_name == 'workflow_dispatch' && inputs.submit_to_play_store && 'true' || 'false' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
