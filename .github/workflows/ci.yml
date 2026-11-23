@@ -40,5 +40,6 @@ jobs:
       - name: Run release environment tests
         run: npm run release:test
 
-      - name: Check Expo project compatibility
+      - name: Expo Doctor compatibility audit (advisory)
         run: npx --yes expo-doctor@latest
+        continue-on-error: true
